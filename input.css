@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* fix scrollbar jumping */
+html { padding-left: calc(100vw - 100%)!important; }

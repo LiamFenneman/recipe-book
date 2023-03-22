@@ -4,7 +4,12 @@ module.exports = {
         files: ["*.html", "./src/**/*.rs"],
     },
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                'sans': ['Alata', 'sans-serif'],
+                'black': ['Black Han Sans', 'sans-serif'],
+            },
+        },
     },
     plugins: [],
 }
