@@ -1,6 +1,9 @@
 use leptos::*;
 use wasm_bindgen::prelude::wasm_bindgen;
 
+pub mod home;
+pub mod recipe;
+
 mod app;
 use app::*;
 
