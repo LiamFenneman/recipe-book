@@ -122,6 +122,7 @@ impl Recipe {
 #[component]
 pub fn RecipeCard(cx: Scope, recipe: Recipe) -> impl IntoView {
     let (expand, set_expand) = create_signal(cx, false);
+
     view! {
         cx,
         <div class="w-full border-2 rounded-xl drop-shadow bg-black bg-opacity-5">
