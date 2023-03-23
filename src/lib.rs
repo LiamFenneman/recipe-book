@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 pub mod home;
 pub mod recipe;
 pub mod storage;
+pub mod add_recipe;
 
 mod app;
 use app::*;
