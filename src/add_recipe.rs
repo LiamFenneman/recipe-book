@@ -8,7 +8,7 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
 
     view! {
         cx,
-        <main class="max-w-md mx-auto py-8">
+        <main class="max-w-md mx-auto py-4">
             <h1 class="mt-8 text-6xl font-normal font-black text-white drop-shadow">"New Recipe"</h1>
             <form
                 class="flex flex-col mt-8 p-4 text-white bg-black bg-opacity-5 rounded-xl shadow-outline"
@@ -46,7 +46,10 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
                     <label class="mt-[-1rem] mb-2 text-red-500 text-xs" for="name">{ err_steps().unwrap() }</label>
                 </Show>
 
-                <input class="text-white p-2 mx-auto w-2/3 cursor-pointer rounded-xl border-2 border-transparent hover:border-white" type="submit" />
+                <div class="flex flex-row gap-4 text-center">
+                    <a href="/" class="text-white w-1/3 p-2 mx-auto cursor-pointer rounded-xl border-2 border-transparent hover:border-white" type="submit">"Back"</a>
+                    <input class="text-white flex-1 p-2 mx-auto cursor-pointer rounded-xl border-2 border-transparent hover:border-white" type="submit" />
+                </div>
             </form>
         </main>
     }
