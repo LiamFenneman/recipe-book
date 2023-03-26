@@ -2,8 +2,8 @@ use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
 
-use crate::home::*;
 use crate::add_recipe::*;
+use crate::home::*;
 
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {

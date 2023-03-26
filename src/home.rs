@@ -3,7 +3,7 @@ use leptos::*;
 
 #[component]
 pub fn HomePage(cx: Scope) -> impl IntoView {
-    let (recipes, _set_recipes) = create_signal(cx, Recipes::new(cx));
+    let recipes = create_rw_signal::<Recipes>(cx, Recipes::new(cx));
 
     create_effect(cx, move |_| {
         if let Ok(Some(storage)) = window().local_storage() {
@@ -13,8 +13,7 @@ pub fn HomePage(cx: Scope) -> impl IntoView {
                 .iter()
                 .map(RecipeSerialized::from)
                 .collect::<Vec<_>>();
-            let json =
-                serde_json::to_string(&objs).expect("couldn't serialize Todos");
+            let json = serde_json::to_string(&objs).expect("couldn't serialize recipes");
             if storage.set_item(STORAGE_KEY, &json).is_err() {
                 log::error!("error while trying to set item in localStorage");
             }
