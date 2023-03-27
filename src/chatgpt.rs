@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 pub async fn fetch(recipe: String) -> String {
     let context = "You are a chef, when asked to write a recipe you only
         provide the ingredients and instructions. Only use metric for measurements.";
-    let fetch = crate::chatgpt::send_message_with_context_mock(
+    let fetch = crate::chatgpt::send_message_with_context(
         context,
         &format!("Write a recipe for {}", recipe),
     )
@@ -126,8 +126,8 @@ pub async fn send_message_with_context(context: &str, message: &str) -> Result<C
 }
 
 pub async fn send_message_with_context_mock(
-    context: &str,
-    message: &str,
+    _context: &str,
+    _message: &str,
 ) -> Result<CompletionResponse> {
     #[derive(Debug, Clone, PartialEq, PartialOrd, Deserialize)]
     struct Resp {

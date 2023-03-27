@@ -44,7 +44,18 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
             .expect("<textarea> exists")
             .set_value("Loading...");
 
-        // TODO: use async/await to call chatgpt fetch
+        spawn_local(async move {
+            let res = crate::chatgpt::fetch(name).await;
+            let (i, s) = crate::chatgpt::transform(&res);
+            
+            set_rows_ingrs(i.len());
+            set_rows_steps(s.len());
+
+            el_ingrs().expect("<textarea> exists").set_value(&i.join("\n"));
+            el_steps().expect("<textarea> exists").set_value(&s.join("\n"));
+
+            is_loading_chat.set(false);
+        });
     };
 
     let on_submit = move |e: SubmitEvent| {
