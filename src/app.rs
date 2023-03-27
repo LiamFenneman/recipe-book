@@ -4,6 +4,7 @@ use leptos_router::*;
 
 use crate::add_recipe::*;
 use crate::home::*;
+use crate::chatgpt::*;
 
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {
@@ -19,6 +20,7 @@ pub fn App(cx: Scope) -> impl IntoView {
             <Routes>
                 <Route path="/" view=move |cx| view! { cx, <HomePage /> } />
                 <Route path="/new" view=move |cx| view! { cx, <AddRecipe /> } />
+                <Route path="/test" view=move |cx| view! { cx, <Test /> } />
             </Routes>
         </Router>
     }

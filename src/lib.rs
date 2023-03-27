@@ -5,6 +5,7 @@ pub mod home;
 pub mod recipe;
 pub mod storage;
 pub mod add_recipe;
+pub mod chatgpt;
 
 mod app;
 use app::*;

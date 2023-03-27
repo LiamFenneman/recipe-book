@@ -5,7 +5,10 @@ use leptos::{
 use leptos_router::{use_navigate, NavigateOptions};
 use web_sys::SubmitEvent;
 
-use crate::{recipe::{Recipe, Recipes, STORAGE_KEY}, storage::RecipeSerialized};
+use crate::{
+    recipe::{Recipe, Recipes, STORAGE_KEY},
+    storage::RecipeSerialized,
+};
 
 #[component]
 pub fn AddRecipe(cx: Scope) -> impl IntoView {
@@ -20,8 +23,38 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
     let (rows_ingrs, set_rows_ingrs) = create_signal(cx, 1);
     let (rows_steps, set_rows_steps) = create_signal(cx, 1);
 
+    let is_loading_chat = create_rw_signal(cx, false);
+    let send_chatgpt_request = move |e: ev::MouseEvent| {
+        e.prevent_default();
+
+        let name = el_name().expect("<input> exists").value();
+        if name.is_empty() {
+            is_loading_chat.set(false);
+            set_err_name(Some("Name cannot be empty."));
+            return;
+        } else {
+            is_loading_chat.set(true);
+            set_err_name(None);
+        }
+
+        el_ingrs()
+            .expect("<textarea> exists")
+            .set_value("Loading...");
+        el_steps()
+            .expect("<textarea> exists")
+            .set_value("Loading...");
+
+        // TODO: use async/await to call chatgpt fetch
+    };
+
     let on_submit = move |e: SubmitEvent| {
         e.prevent_default();
+
+        if is_loading_chat.get() {
+            set_err_ingrs(Some("Wait for ChatGPT to finish."));
+            set_err_steps(Some("Wait for ChatGPT to finish."));
+            return;
+        }
 
         let name = el_name().expect("<input> exists").value();
         let ingrs = el_ingrs()
@@ -58,9 +91,10 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
         });
 
         if err_name().is_none() && err_ingrs().is_none() && err_steps().is_none() {
-            // TODO: update the recipes signal
             let mut recipes = Recipes::new(cx);
-            recipes.0.push(Recipe::new(cx, uuid::Uuid::new_v4(), name, ingrs, steps));
+            recipes
+                .0
+                .push(Recipe::new(cx, uuid::Uuid::new_v4(), name, ingrs, steps));
             if let Ok(Some(storage)) = window().local_storage() {
                 let objs = recipes
                     .0
@@ -93,12 +127,31 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
                 on:submit=on_submit
             >
                 <label class="mb-1" for="name">"Name"</label>
+                <label class="mb-1 text-xs" for="name">"Example: Homemade pizza"</label>
                 <input class="text-black mb-4 rounded-xl" name="name" type="text" node_ref=el_name />
                 <Show
                     when=move || err_name().is_some()
                     fallback=move |_| view! { cx, <></> }
                 >
                     <label class="mt-[-1rem] mb-2 text-red-500 text-xs" for="name">{ err_name().unwrap() }</label>
+                </Show>
+
+                <Show
+                    when=move || !is_loading_chat()
+                    fallback=move |_| view! {
+                        cx,
+                        <div class="text-white text-center w-2/3 p-2 mb-4 mx-auto cursor-pointer rounded-xl
+                            border-2 border-white hover:bg-black hover:bg-opacity-5 select-none">
+                            "Loading..."
+                        </div>
+                    }
+                >
+                    <button
+                        class="text-white w-2/3 p-2 mb-4 mx-auto cursor-pointer rounded-xl border-2 border-white hover:bg-black hover:bg-opacity-5"
+                        on:click=send_chatgpt_request
+                    >
+                        "Ask ChatGPT"
+                    </button>
                 </Show>
 
                 <label class="mb-1" for="ingredients">"Ingredients"</label>
@@ -135,7 +188,7 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
 
                 <div class="flex flex-row gap-4 text-center">
                     <a href="/" class="text-white w-1/3 p-2 mx-auto cursor-pointer rounded-xl border-2 border-transparent hover:border-white" type="submit">"Back"</a>
-                    <input class="text-white flex-1 p-2 mx-auto cursor-pointer rounded-xl border-2 border-transparent hover:border-white" type="submit" />
+                    <input class="text-white flex-1 p-2 mx-auto cursor-pointer rounded-xl border-2 border-white hover:bg-black hover:bg-opacity-10" type="submit" />
                 </div>
             </form>
         </main>
