@@ -892,27 +892,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "leptos-csr"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "console_error_panic_hook",
- "console_log",
- "dotenvy",
- "dotenvy_macro",
- "leptos",
- "leptos_meta",
- "leptos_router",
- "log",
- "reqwasm",
- "serde",
- "serde_json",
- "uuid",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
 name = "leptos_config"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1471,6 +1450,27 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.107",
+]
+
+[[package]]
+name = "recipe-book"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "console_error_panic_hook",
+ "console_log",
+ "dotenvy",
+ "dotenvy_macro",
+ "leptos",
+ "leptos_meta",
+ "leptos_router",
+ "log",
+ "reqwasm",
+ "serde",
+ "serde_json",
+ "uuid",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
