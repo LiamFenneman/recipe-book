@@ -182,7 +182,7 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
                 </Show>
 
                 <label class="mb-1" for="steps">"Steps"</label>
-                <label class="mb-1 text-xs" for="steps">"Each line is a separate step. Numbers are automatically added."</label>
+                <label class="mb-1 text-xs" for="steps">"Each line is a separate step."</label>
                 <textarea
                     class="text-black mb-4 resize-none rounded-xl"
                     name="steps"

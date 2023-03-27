@@ -45,13 +45,13 @@ impl Recipes {
                     "1 tablespoon of butter".into(),
                 ],
                 vec![
-                    "Mix the dry ingredients together in a bowl.".into(),
-                    "Mix the wet ingredients together in a separate bowl.".into(),
-                    "Combine the wet and dry ingredients.".into(),
-                    "Heat a pan over medium heat.".into(),
-                    "Pour the batter into the pan.".into(),
-                    "Cook until the edges start to bubble.".into(),
-                    "Flip and cook until golden brown.".into(),
+                    "1. Mix the dry ingredients together in a bowl.".into(),
+                    "2. Mix the wet ingredients together in a separate bowl.".into(),
+                    "3. Combine the wet and dry ingredients.".into(),
+                    "4. Heat a pan over medium heat.".into(),
+                    "5. Pour the batter into the pan.".into(),
+                    "6. Cook until the edges start to bubble.".into(),
+                    "7. Flip and cook until golden brown.".into(),
                 ],
             ),
             Recipe::new(
@@ -65,15 +65,15 @@ impl Recipes {
                     "1/2 cup of vegetables".into(),
                 ],
                 vec![
-                    "Crack the eggs into a bowl.".into(),
-                    "Whisk the eggs.".into(),
-                    "Heat a pan over medium heat.".into(),
-                    "Add the butter to the pan.".into(),
-                    "Add the eggs to the pan.".into(),
-                    "Add the cheese to the eggs.".into(),
-                    "Add the vegetables to the eggs.".into(),
-                    "Cook until the edges start to bubble.".into(),
-                    "Flip and cook until golden brown.".into(),
+                    "1. Crack the eggs into a bowl.".into(),
+                    "2. Whisk the eggs.".into(),
+                    "3. Heat a pan over medium heat.".into(),
+                    "4. Add the butter to the pan.".into(),
+                    "5. Add the eggs to the pan.".into(),
+                    "6. Add the cheese to the eggs.".into(),
+                    "7. Add the vegetables to the eggs.".into(),
+                    "8. Cook until the edges start to bubble.".into(),
+                    "9. Flip and cook until golden brown.".into(),
                 ],
             ),
         ]
@@ -142,7 +142,7 @@ pub fn RecipeCard(cx: Scope, recipe: Recipe) -> impl IntoView {
             >
                 <div class="border-t-2 p-4 space-y-2">
                     <h5 class="">"Ingredients"</h5>
-                    <ul class="ml-4 list-disc list-inside space-y-1">
+                    <ul class="ml-2 list-disc list-inside space-y-1">
                     { recipe.ingredients.get().iter().map(|ing| {
                         view! {
                             cx,
@@ -151,7 +151,7 @@ pub fn RecipeCard(cx: Scope, recipe: Recipe) -> impl IntoView {
                     }).collect::<Vec<_>>() }
                     </ul>
                     <h5 class="">"Steps"</h5>
-                    <ol class="ml-8 list-decimal list-outside space-y-1">
+                    <ol class="ml-2 list-none list-outside space-y-1">
                     { recipe.steps.get().iter().map(|step| {
                         view! {
                             cx,
