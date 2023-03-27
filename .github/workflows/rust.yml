@@ -31,6 +31,8 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
+      - name: Install Tailwind Forms
+        run: npm install -d @tailwindcss/forms
       - name: Build with Trunk
         run: ./trunk build --release
       - name: Upload artifact
