@@ -42,7 +42,7 @@ jobs:
       - name: Install Tailwind Forms
         run: npm install -d @tailwindcss/forms
       - name: Build with Trunk
-        run: ./trunk build --release
+        run: ./trunk build --release --public-url '/recipe-book/'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
