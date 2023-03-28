@@ -4,11 +4,22 @@ use leptos_router::*;
 
 use crate::add_recipe::*;
 use crate::home::*;
-use crate::chatgpt::*;
 
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {
     provide_meta_context(cx);
+
+    cfg_if::cfg_if! {
+        if #[cfg(debug_assertions)] {
+            let path_prefix = "";
+        } else {
+            let path_prefix = "/recipe-book";
+        }
+    }
+
+    let path = move |path: &str| {
+        format!("{}{}", path_prefix, path)
+    };
 
     view! {
         cx,
@@ -18,9 +29,8 @@ pub fn App(cx: Scope) -> impl IntoView {
         />
         <Router>
             <Routes>
-                <Route path="/" view=move |cx| view! { cx, <HomePage /> } />
-                <Route path="/new" view=move |cx| view! { cx, <AddRecipe /> } />
-                <Route path="/test" view=move |cx| view! { cx, <Test /> } />
+                <Route path={path("/")} view=move |cx| view! { cx, <HomePage /> } />
+                <Route path={path("/new")} view=move |cx| view! { cx, <AddRecipe /> } />
             </Routes>
         </Router>
     }

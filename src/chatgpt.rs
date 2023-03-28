@@ -1,5 +1,4 @@
 use anyhow::Result;
-use leptos::*;
 use serde::{Deserialize, Serialize};
 
 pub async fn fetch(recipe: String) -> String {
@@ -54,50 +53,6 @@ pub fn transform(data: &str) -> (Vec<String>, Vec<String>) {
     (ingredients, instructions)
 }
 
-#[component]
-pub fn Test(cx: Scope) -> impl IntoView {
-    let (signal, _) = create_signal(cx, String::from("pizza"));
-    let res = create_local_resource(cx, signal, fetch);
-
-    let fallback = move |cx, errors: RwSignal<Errors>| {
-        let error_list = move || {
-            errors.with(|errors| {
-                errors
-                    .iter()
-                    .map(|(_, e)| view! { cx, <li>{e.to_string()}</li>})
-                    .collect::<Vec<_>>()
-            })
-        };
-
-        view! { cx,
-            <div class="error">
-                <h2>"Error"</h2>
-                <ul>{error_list}</ul>
-            </div>
-        }
-    };
-
-    let fetch_view = move || {
-        res.with(cx, |data| {
-            view! {
-                cx,
-                <p>{format!("{:#?}", transform(data))}</p>
-            }
-        })
-    };
-
-    view! {
-        cx,
-        <div>
-            <ErrorBoundary fallback>
-                <Transition fallback=move || view! { cx, <div>"Loading..."</div>}>
-                    {fetch_view}
-                </Transition>
-            </ErrorBoundary>
-        </div>
-    }
-}
-
 pub async fn send_message(message: &str) -> Result<CompletionResponse> {
     cfg_if::cfg_if! {
         if #[cfg(debug_assertions)] {
@@ -130,41 +85,6 @@ pub async fn send_message(message: &str) -> Result<CompletionResponse> {
 
 pub async fn send_message_with_context(context: &str, message: &str) -> Result<CompletionResponse> {
     send_message(&format!("{} {}", context, message)).await
-}
-
-pub async fn send_message_with_context_mock(
-    _context: &str,
-    _message: &str,
-) -> Result<CompletionResponse> {
-    #[derive(Debug, Clone, PartialEq, PartialOrd, Deserialize)]
-    struct Resp {
-        message: String,
-        status: String,
-    }
-    let res: Resp = reqwasm::http::Request::get("https://dog.ceo/api/breeds/image/random")
-        .send()
-        .await?
-        .json()
-        .await?;
-
-    Ok(CompletionResponse {
-        message_id: String::from("1"),
-        created_timestamp: 1,
-        model: String::from("gpt-3.5-turbo"),
-        usage: TokenUsage {
-            prompt_tokens: 10,
-            completion_tokens: 10,
-            total_tokens: 20,
-        },
-        message_choices: vec![MessageChoice {
-            index: 1,
-            finish_reason: String::from("test"),
-            message: ChatMessage {
-                role: Role::User,
-                content: res.message,
-            },
-        }],
-    })
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize)]
