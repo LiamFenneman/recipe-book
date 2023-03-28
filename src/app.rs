@@ -5,10 +5,7 @@ use leptos_router::*;
 use crate::add_recipe::*;
 use crate::home::*;
 
-#[component]
-pub fn App(cx: Scope) -> impl IntoView {
-    provide_meta_context(cx);
-
+pub fn path_with_prefix(path: &str) -> String {
     cfg_if::cfg_if! {
         if #[cfg(debug_assertions)] {
             let path_prefix = "";
@@ -17,9 +14,12 @@ pub fn App(cx: Scope) -> impl IntoView {
         }
     }
 
-    let path = move |path: &str| {
-        format!("{}{}", path_prefix, path)
-    };
+    format!("{}{}", path_prefix, path)
+}
+
+#[component]
+pub fn App(cx: Scope) -> impl IntoView {
+    provide_meta_context(cx);
 
     view! {
         cx,
@@ -29,8 +29,8 @@ pub fn App(cx: Scope) -> impl IntoView {
         />
         <Router>
             <Routes>
-                <Route path={path("/")} view=move |cx| view! { cx, <HomePage /> } />
-                <Route path={path("/new")} view=move |cx| view! { cx, <AddRecipe /> } />
+                <Route path={path_with_prefix("/")} view=move |cx| view! { cx, <HomePage /> } />
+                <Route path={path_with_prefix("/new")} view=move |cx| view! { cx, <AddRecipe /> } />
             </Routes>
         </Router>
     }
