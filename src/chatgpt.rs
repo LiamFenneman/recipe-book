@@ -31,8 +31,8 @@ pub fn transform(data: &str) -> (Vec<String>, Vec<String>) {
         if line.starts_with("Ingredients") {
             continue;
         }
-        if line.starts_with("- ") {
-            ingredients.push(line[2..].to_string());
+        if let Some(stripped) = line.strip_prefix("- ") {
+            ingredients.push(stripped.to_string());
             continue;
         }
         ingredients.push(line.to_string());
@@ -99,11 +99,18 @@ pub fn Test(cx: Scope) -> impl IntoView {
 }
 
 pub async fn send_message(message: &str) -> Result<CompletionResponse> {
+    cfg_if::cfg_if! {
+        if #[cfg(debug_assertions)] {
+            let api_key = dotenvy_macro::dotenv!("OPENAI_API_KEY");
+        } else {
+            let api_key = std::env!("OPENAI_API_KEY");
+        }
+    }
     Ok(
-        reqwasm::http::Request::post(&format!("https://api.openai.com/v1/chat/completions",))
+        reqwasm::http::Request::post("https://api.openai.com/v1/chat/completions")
             .header(
                 "Authorization",
-                &format!("Bearer {}", dotenvy_macro::dotenv!("OPENAI_API_KEY")),
+                &format!("Bearer {}", api_key),
             )
             .header("content-type", "application/json")
             .body(serde_json::to_string(&CompletionRequest {
@@ -122,7 +129,7 @@ pub async fn send_message(message: &str) -> Result<CompletionResponse> {
 }
 
 pub async fn send_message_with_context(context: &str, message: &str) -> Result<CompletionResponse> {
-    Ok(send_message(&format!("{} {}", context, message)).await?)
+    send_message(&format!("{} {}", context, message)).await
 }
 
 pub async fn send_message_with_context_mock(

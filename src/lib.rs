@@ -1,3 +1,5 @@
+#![allow(clippy::let_with_type_underscore)]
+
 use leptos::*;
 use wasm_bindgen::prelude::wasm_bindgen;
 

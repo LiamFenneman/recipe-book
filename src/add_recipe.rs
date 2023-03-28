@@ -73,14 +73,14 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
             .value()
             .lines()
             .map(|s| s.to_string())
-            .filter(|s| !s.is_empty() && s != "")
+            .filter(|s| !s.is_empty())
             .collect::<Vec<_>>();
         let steps = el_steps()
             .expect("<textarea> exists")
             .value()
             .lines()
             .map(|s| s.to_string())
-            .filter(|s| !s.is_empty() && s != "")
+            .filter(|s| !s.is_empty())
             .collect::<Vec<_>>();
 
         set_err_name(if name.is_empty() {

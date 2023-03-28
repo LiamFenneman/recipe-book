@@ -137,7 +137,7 @@ pub fn RecipeCard(cx: Scope, recipe: Recipe) -> impl IntoView {
                 </div>
             </div>
             <Show
-                when=move || expand()
+                when=expand
                 fallback=move |_| view! { cx, <></> }
             >
                 <div class="border-t-2 p-4 space-y-2">
