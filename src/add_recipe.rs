@@ -120,7 +120,7 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
 
             // navigate to home page
             let _ = use_navigate(cx)(
-                "/",
+                &crate::path_with_prefix("/"),
                 NavigateOptions {
                     replace: true,
                     ..Default::default()
@@ -198,7 +198,7 @@ pub fn AddRecipe(cx: Scope) -> impl IntoView {
                 </Show>
 
                 <div class="flex flex-row gap-4 text-center">
-                    <a href="/" class="text-white w-1/3 p-2 mx-auto cursor-pointer rounded-xl border-2 border-transparent hover:border-white" type="submit">"Back"</a>
+                    <a href={crate::path_with_prefix("/")} class="text-white w-1/3 p-2 mx-auto cursor-pointer rounded-xl border-2 border-transparent hover:border-white" type="submit">"Back"</a>
                     <input class="text-white flex-1 p-2 mx-auto cursor-pointer rounded-xl border-2 border-white hover:bg-black hover:bg-opacity-10" type="submit" />
                 </div>
             </form>
