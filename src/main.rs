@@ -4,8 +4,8 @@ async fn main() {
     use axum::{extract::Extension, routing::post, Router};
     use leptos::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
-    use recipe_book::app::*;
-    use recipe_book::fileserv::file_and_error_handler;
+    use recipe_book::frontend::app::*;
+    use recipe_book::backend::fileserv::file_and_error_handler;
     use std::sync::Arc;
 
     simple_logger::init_with_level(log::Level::Debug).expect("couldn't initialize logging");
