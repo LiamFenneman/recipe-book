@@ -1,25 +1,21 @@
-#![allow(clippy::let_with_type_underscore)]
+use cfg_if::cfg_if;
+pub mod app;
+pub mod error_template;
+pub mod fileserv;
 
-use leptos::*;
-use wasm_bindgen::prelude::wasm_bindgen;
+cfg_if! { if #[cfg(feature = "hydrate")] {
+    use leptos::*;
+    use wasm_bindgen::prelude::wasm_bindgen;
+    use crate::app::*;
 
-pub mod home;
-pub mod recipe;
-pub mod storage;
-pub mod add_recipe;
-pub mod chatgpt;
+    #[wasm_bindgen]
+    pub fn hydrate() {
+        // initializes logging using the `log` crate
+        _ = console_log::init_with_level(log::Level::Debug);
+        console_error_panic_hook::set_once();
 
-mod app;
-use app::*;
-
-#[wasm_bindgen(start)]
-pub fn main() {
-    let _ = console_log::init_with_level(log::Level::Debug);
-    console_error_panic_hook::set_once();
-
-    mount_to_body(|cx| {
-        view! {
-            cx, <App />
-        }
-    });
-}
+        leptos::mount_to_body(move |cx| {
+            view! { cx, <App/> }
+        });
+    }
+}}
