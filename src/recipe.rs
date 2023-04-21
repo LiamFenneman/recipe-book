@@ -1,3 +1,4 @@
+use cfg_if::cfg_if;
 use leptos::*;
 use uuid::Uuid;
 
@@ -100,4 +101,30 @@ impl Recipe {
             steps,
         }
     }
+}
+
+cfg_if! { if #[cfg(feature = "ssr")] {
+    pub fn register_server_functions() {
+        _ = AddRecipe::register();
+    }
+}}
+
+#[server(AddRecipe, "/api")]
+pub async fn add_recipe(
+    name: String,
+    ingredients: String,
+    steps: String,
+) -> Result<(), ServerFnError> {
+    let ingredients: Vec<String> = ingredients
+        .lines()
+        .map(|l| l.trim().to_string())
+        .filter(|l| !l.is_empty())
+        .collect();
+    let steps: Vec<String> = steps
+        .lines()
+        .map(|l| l.trim().to_string())
+        .filter(|l| !l.is_empty())
+        .collect();
+    leptos::tracing::debug!(name, ?ingredients, ?steps);
+    Ok(())
 }
