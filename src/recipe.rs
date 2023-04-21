@@ -1,8 +1,6 @@
 use leptos::*;
 use uuid::Uuid;
 
-use crate::storage::RecipeSerialized;
-
 pub const STORAGE_KEY: &str = "recipe-book";
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -11,22 +9,6 @@ pub struct Recipes(pub Vec<Recipe>);
 impl Recipes {
     pub fn new(cx: Scope) -> Self {
         let starting_recipes = Self::example(cx);
-        // let starting_recipes = if let Ok(Some(storage)) = window().local_storage() {
-        //     storage
-        //         .get_item(STORAGE_KEY)
-        //         .ok()
-        //         .flatten()
-        //         .and_then(|value| serde_json::from_str::<Vec<RecipeSerialized>>(&value).ok())
-        //         .map(|values| {
-        //             values
-        //                 .into_iter()
-        //                 .map(|stored| stored.into_recipe(cx))
-        //                 .collect()
-        //         })
-        //         .unwrap_or_else(|| Self::example(cx))
-        // } else {
-        //     Self::example(cx)
-        // };
         Self(starting_recipes)
     }
 
