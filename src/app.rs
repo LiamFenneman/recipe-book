@@ -1,4 +1,4 @@
-use crate::{pages::Home::*, components::Page::*};
+use crate::{components::Page::*, pages::Home::*, pages::NewRecipe::*, recipe::Recipes};
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
@@ -21,10 +21,31 @@ pub fn provide_dark_mode_context(cx: Scope) {
     );
 }
 
+#[derive(Clone)]
+pub struct RecipesContext {
+    pub recipes: ReadSignal<Recipes>,
+    pub set_recipes: WriteSignal<Recipes>,
+}
+
+pub fn provide_recipes_context(cx: Scope) {
+    let (recipes, set_recipes) = create_signal(cx, Recipes::new(cx));
+
+    provide_context(
+        cx,
+        RecipesContext {
+            recipes,
+            set_recipes,
+        },
+    );
+}
+
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {
     provide_meta_context(cx);
     provide_dark_mode_context(cx);
+    provide_recipes_context(cx);
+
+    let dark_mode = use_context::<DarkModeContext>(cx).unwrap().dark_mode;
 
     view! {
         cx,
@@ -34,12 +55,20 @@ pub fn App(cx: Scope) -> impl IntoView {
 
         <Stylesheet id="leptos" href="/pkg/recipe_book.css"/>
 
-        <Title text="Welcome to Leptos"/>
+        <Title text="Recipe Book"/>
+
+        <Body class=move || format!(
+            "{} min-h-screen bg-gradient-to-br from-cyan-600 to-blue-600 px-8 sm:px-0",
+            match dark_mode() {
+                true => "dark",
+                false => "light",
+        })/>
 
         <Router>
             <Page>
                 <Routes>
                     <Route path="" view=|cx| view! { cx, <Home/> }/>
+                    <Route path="/new" view=|cx| view! { cx, <NewRecipe/> }/>
                 </Routes>
             </Page>
         </Router>
