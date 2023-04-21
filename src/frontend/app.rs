@@ -12,7 +12,7 @@ pub fn App(cx: Scope) -> impl IntoView {
         <Link href=r#"https://fonts.bunny.net/css?family=alata:400"# rel="stylesheet"/>
         <Link href=r#"https://fonts.bunny.net/css?family=black-han-sans:400"# rel="stylesheet"/>
 
-        <Stylesheet id="leptos" href="/pkg/recipe-book.css"/>
+        <Stylesheet id="leptos" href="/pkg/recipe_book.css"/>
 
         <Title text="Welcome to Leptos"/>
 
@@ -32,7 +32,7 @@ fn HomePage(cx: Scope) -> impl IntoView {
     let on_click = move |_| set_count.update(|count| *count += 1);
 
     view! { cx,
-        <h1 class="bg-blue-500">"Welcome to Leptos!"</h1>
+        <h1 class="bg-red-500">"Welcome to Leptos!"</h1>
         <button on:click=on_click>"Click Me: " {count}</button>
     }
 }

@@ -1577,7 +1577,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "recipe-book"
+name = "recipe_book"
 version = "0.2.0"
 dependencies = [
  "axum",

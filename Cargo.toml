@@ -1,5 +1,5 @@
 [package]
-name = "recipe-book"
+name = "recipe_book"
 version = "0.2.0"
 edition = "2021"
 
@@ -50,7 +50,7 @@ denylist = [
 skip_feature_sets = [["ssr", "hydrate"]]
 
 [package.metadata.leptos]
-output-name = "recipe-book"
+output-name = "recipe_book"
 site-root = "target/site"
 site-pkg-dir = "pkg"
 
