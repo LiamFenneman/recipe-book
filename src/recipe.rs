@@ -1,8 +1,7 @@
+use crate::storage::RecipeSerialized;
 use cfg_if::cfg_if;
 use leptos::*;
 use uuid::Uuid;
-
-pub const STORAGE_KEY: &str = "recipe-book";
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Recipes(pub Vec<Recipe>);
@@ -103,11 +102,56 @@ impl Recipe {
     }
 }
 
-cfg_if! { if #[cfg(feature = "ssr")] {
-    pub fn register_server_functions() {
-        _ = AddRecipe::register();
+cfg_if! {
+    if #[cfg(feature = "ssr")] {
+        use sqlx::{Connection, SqliteConnection};
+        use futures::TryStreamExt;
+
+        pub async fn db() -> Result<SqliteConnection, ServerFnError> {
+            SqliteConnection::connect("sqlite:recipes.db").await
+                .map_err(|e| ServerFnError::ServerError(e.to_string()))
+        }
+
+        pub fn register_server_functions() {
+            _ = GetRecipes::register();
+            _ = AddRecipe::register();
+        }
+
+        #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, sqlx::FromRow)]
+        pub struct RecipeRow {
+            id: String,
+            name: String,
+            ingredients: String,
+            steps: String,
+        }
     }
-}}
+}
+
+#[server(GetRecipes, "/api")]
+pub async fn get_recipes() -> Result<Vec<RecipeSerialized>, ServerFnError> {
+    let mut conn = db().await?;
+
+    let mut recipes = vec![];
+    let mut rows = sqlx::query_as::<_, RecipeRow>("SELECT * FROM recipes").fetch(&mut conn);
+
+    while let Some(row) = rows
+        .try_next()
+        .await
+        .map_err(|e| ServerFnError::ServerError(e.to_string()))?
+    {
+        recipes.push(row);
+    }
+
+    Ok(recipes
+        .into_iter()
+        .map(|r| RecipeSerialized {
+            id: Uuid::parse_str(&r.id).unwrap(),
+            name: r.name,
+            ingredients: r.ingredients.lines().map(|l| l.to_string()).collect(),
+            steps: r.steps.lines().map(|l| l.to_string()).collect(),
+        })
+        .collect())
+}
 
 #[server(AddRecipe, "/api")]
 pub async fn add_recipe(
@@ -115,16 +159,37 @@ pub async fn add_recipe(
     ingredients: String,
     steps: String,
 ) -> Result<(), ServerFnError> {
-    let ingredients: Vec<String> = ingredients
+    let ingredients = ingredients
         .lines()
         .map(|l| l.trim().to_string())
         .filter(|l| !l.is_empty())
-        .collect();
-    let steps: Vec<String> = steps
+        .collect::<Vec<String>>()
+        .join("\n");
+    let steps = steps
         .lines()
         .map(|l| l.trim().to_string())
         .filter(|l| !l.is_empty())
-        .collect();
+        .collect::<Vec<String>>()
+        .join("\n");
     leptos::tracing::debug!(name, ?ingredients, ?steps);
-    Ok(())
+
+    let mut conn = db().await?;
+
+    let id = uuid::Uuid::new_v4();
+    match sqlx::query!(
+        r#"
+INSERT INTO recipes (id, name, ingredients, steps)
+VALUES (?1, ?2, ?3, ?4)
+        "#,
+        id,
+        name,
+        ingredients,
+        steps
+    )
+    .execute(&mut conn)
+    .await
+    {
+        Ok(_row) => Ok(()),
+        Err(e) => Err(ServerFnError::ServerError(e.to_string())),
+    }
 }
